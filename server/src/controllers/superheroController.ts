@@ -1,5 +1,15 @@
 import { Request, Response } from 'express';
 import Superhero from '@models/Superhero';
+import fs from 'fs';
+import path from 'path';
+
+const deleteFile = (filePath: string) => {
+    // Шлях на сервері, який потрібно видалити
+    const fullPath = path.join(__dirname, '..', '..', filePath);
+    fs.unlink(fullPath, (err) => {
+        if (err) console.error(`Failed to delete file: ${fullPath}`, err);
+    });
+};
 
 export const createSuperhero = async (req: Request, res: Response) => {
     try {
@@ -91,10 +101,64 @@ export const getSuperheroById = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Superhero not found' });
         }
 
-        return res.status(200).json( superhero );
+        return res.status(200).json(superhero);
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error during superhero getting' });
+    }
+};
+
+
+
+export const updateSuperhero = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        const superhero = await Superhero.findById(id);
+        if (!superhero) {
+            return res.status(404).json({ message: 'Superhero not found' });
+        }
+
+        const fieldsToUpdate = ['nickname', 'real_name', 'origin_description', 'superpowers', 'catch_phrase'];
+        fieldsToUpdate.forEach(filed => {
+            if (updateData[filed]) {
+                (superhero as any)[filed] = updateData[filed];
+            }
+        })
+
+        const newImagePaths: string[] = [];
+        if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+            (req.files as Express.Multer.File[]).forEach(file => {
+                newImagePaths.push(`/uploads/${file.filename}`);
+            });
+        }
+
+        const imagesToRemove: string[] = JSON.parse(updateData.imagesToRemove || '[]');
+
+        if (imagesToRemove.length > 0) {
+            superhero.images = superhero.images.filter(imagePath => {
+                const shouldRemove = imagesToRemove.includes(imagePath);
+                if (shouldRemove) {
+                    deleteFile(imagePath);
+                }
+                return !shouldRemove;
+            });
+        }
+
+        if (newImagePaths.length > 0) {
+            superhero.images.push(...newImagePaths);
+        }
+
+        await superhero.save();
+
+        res.status(200).json({
+            message: 'Superhero updated successfully',
+            superhero
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error while updating superhero' });
     }
 };
