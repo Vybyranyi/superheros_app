@@ -6,7 +6,7 @@ export interface ISuperhero extends Document {
     origin_description: string;
     superpowers: string[];
     catch_phrase: string;
-    image: string[];
+    images: string[];
     createdAt: Date;
     updatedAt: Date;
 
@@ -18,7 +18,7 @@ const SuperheroSchema: Schema = new Schema({
     origin_description: { type: String, required: true },
     superpowers: { type: [String], required: true },
     catch_phrase: { type: String, required: true },
-    image: { type: [String], required: true },
+    images: { type: [String], required: true },
 }, { timestamps: true });
 
 const Superhero = mongoose.model<ISuperhero>('Superhero', SuperheroSchema);
