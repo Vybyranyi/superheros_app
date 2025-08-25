@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 
 const deleteFile = (filePath: string) => {
-    // Шлях на сервері, який потрібно видалити
     const fullPath = path.join(__dirname, '..', '..', filePath);
     fs.unlink(fullPath, (err) => {
         if (err) console.error(`Failed to delete file: ${fullPath}`, err);
@@ -109,8 +108,6 @@ export const getSuperheroById = async (req: Request, res: Response) => {
     }
 };
 
-
-
 export const updateSuperhero = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -160,5 +157,28 @@ export const updateSuperhero = async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error while updating superhero' });
+    }
+};
+
+export const deleteSuperhero = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const superhero = await Superhero.findById(id);
+
+        if (!superhero) {
+            return res.status(404).json({ message: 'Superhero not found' });
+        }
+
+        await superhero.deleteOne();
+
+        superhero.images.forEach(imagePath => {
+            deleteFile(imagePath);
+        });
+
+        res.status(200).json({ message: 'Superhero and associated images deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error while deleting superhero' });
     }
 };
