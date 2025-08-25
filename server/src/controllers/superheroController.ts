@@ -3,9 +3,9 @@ import Superhero from '@models/Superhero';
 
 export const createSuperhero = async (req: Request, res: Response) => {
     try {
-        const { nickname, real_name, origin_description, superpowers, catch_phrase, image } = req.body;
+        const { nickname, real_name, origin_description, superpowers, catch_phrase } = req.body;
 
-        if (!nickname || !real_name || !origin_description || !superpowers || !catch_phrase || !image) {
+        if (!nickname || !real_name || !origin_description || !superpowers || !catch_phrase) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
@@ -14,8 +14,15 @@ export const createSuperhero = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'Superhero already exists' });
         }
 
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: 'No images were uploaded' });
+        }
+
+        const imagePaths = (req.files as Express.Multer.File[]).map(file => `/uploads/${file.filename}`);
+
         const newSuperhero = new Superhero({
             ...req.body,
+            image: imagePaths
         });
 
         await newSuperhero.save();
