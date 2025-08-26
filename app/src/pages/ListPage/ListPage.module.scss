@@ -1,1 +1,7 @@
 @use '@assets/styles/colorVariables.scss' as *;
+
+.cardContainer {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}

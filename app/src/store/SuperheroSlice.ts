@@ -85,9 +85,9 @@ export const createSuperhero = createAsyncThunk(
 
 export const getAllSuperheroes = createAsyncThunk(
   "superheros/getAll",
-  async (_, { rejectWithValue }) => {
+  async (pageURL: string | null, { rejectWithValue }) => {
     try {
-      const res = await fetch(`${API_URL}/superheroes/all`);
+      const res = await fetch(`${API_URL}${pageURL ? pageURL : "/superheroes/all"}`);
       const data = await res.json();
       if (!res.ok) {
         return rejectWithValue(data.message || "failed to fetch superheroes");

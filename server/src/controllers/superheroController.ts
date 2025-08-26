@@ -62,7 +62,7 @@ export const getSuperheroes = async (req: Request, res: Response) => {
         const responseData = superheroes.map(superhero => ({
             _id: superhero._id,
             nickname: superhero.nickname,
-            images: superhero.images.length > 0 ? superhero.images[0] : null,
+            images: superhero.images.length > 0 ? [superhero.images[0]] : [],
         }));
 
         let nextPageUrl = null;

@@ -8,23 +8,25 @@ import { useEffect } from 'react';
 export default function ListPage() {
 
     const dispatch = useAppDispatch();
-    const { superheroesList, loading, error } = useAppSelector((state) => state.superheros);
+    const { superheroesList } = useAppSelector((state) => state.superheros);
 
     useEffect(() => {
-        dispatch(getAllSuperheroes());
+        dispatch(getAllSuperheroes(null));
     }, [dispatch]);
 
     return (
 
         <div>
             <h1>Superhero List</h1>
-            {superheroesList ? (
-                superheroesList.map((hero: ISuperheroList) => (
-                    <Card key={hero._id} _id={hero._id} nickname={hero.nickname} images={hero.images} />
-                ))
-            ) : (
-                <p>No superheroes found</p>
-            )}
+            <div className={styles.cardContainer}>
+                {superheroesList ? (
+                    superheroesList.map((hero: ISuperheroList) => (
+                        <Card key={hero._id} _id={hero._id} nickname={hero.nickname} images={hero.images} />
+                    ))
+                ) : (
+                    <p>No superheroes found</p>
+                )}
+            </div>
         </div>
     )
 }

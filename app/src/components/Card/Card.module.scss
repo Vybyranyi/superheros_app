@@ -2,21 +2,47 @@
 
 .card {
     width: 300px;
-    // height: 400px;
-    background-color: var(--Gray);
-    border-radius: 8px;
+    background-color: var(--White);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(205, 205, 208, 0.2);
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(56, 67, 255, 0.12);
+        border-color: var(--Blue);
+        
+        img {
+            transform: scale(1.03);
+        }
+        
+        h2 {
+            color: var(--Blue);
+        }
+    }
 
     img {
         width: 100%;
-        height: auto;
-        aspect-ratio: 1;
-
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        background-color: var(--Background);
     }
 
     h2 {
-        padding: 20px 16px;
+        padding: 16px 20px;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--Black);
+        transition: color 0.3s ease;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
+
+
 }
