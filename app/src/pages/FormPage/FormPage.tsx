@@ -5,14 +5,11 @@ import Input from '@components/Input/Input';
 import Button from '@components/Button/Button';
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { createSuperhero } from "@store/SuperheroSlice";
-import { useState } from "react";
 import FileInput from '@components/FileInput/FileInput';
 
 export default function FormPage() {
     const dispatch = useAppDispatch();
     const { loading, error } = useAppSelector(state => state.superheros);
-
-    const [files, setFiles] = useState<File[]>([]);
 
     const initialValues = {
         nickname: '',
@@ -20,6 +17,7 @@ export default function FormPage() {
         origin_description: '',
         superpowers: '',
         catch_phrase: '',
+        images: [] as File[],
     };
 
     const validationSchema = Yup.object({
@@ -38,6 +36,10 @@ export default function FormPage() {
         catch_phrase: Yup.string()
             .min(5, 'Catch phrase must be at least 5 characters')
             .required('Required'),
+        images: Yup.array()
+            .of(Yup.mixed().required('Required'))
+            .min(1, 'At least one image is required')
+            .max(5, 'No more than 5 images are allowed'),
     });
 
     return (
@@ -54,15 +56,14 @@ export default function FormPage() {
                             origin_description: values.origin_description,
                             superpowers: values.superpowers.split(',').map(s => s.trim()),
                             catch_phrase: values.catch_phrase,
-                            images: files,
+                            images: values.images,
                         };
 
                         await dispatch(createSuperhero(payload));
                         resetForm();
-                        setFiles([]);
                     }}
                 >
-                    {({ values, errors, touched, handleChange, handleBlur, isValid, dirty }) => (
+                    {({ values, errors, touched, handleChange, handleBlur, isValid, dirty, setFieldValue }) => (
                         <Form>
                             <div className={styles.inputsContainer}>
                                 <Input
@@ -105,7 +106,15 @@ export default function FormPage() {
                                     onBlur={handleBlur("catch_phrase")}
                                     error={touched.catch_phrase ? errors.catch_phrase : ""}
                                 />
-                                <FileInput files={files} setFiles={setFiles} label="Images" />
+                                <FileInput
+                                    files={values.images}
+                                    setFiles={(newFiles) => {
+                                        setFieldValue("images", newFiles);
+                                    }}
+                                    label="Images"
+                                    error={touched.images ? (errors.images as string) : ""}
+                                />
+
                             </div>
 
                             {error && (

@@ -5,6 +5,7 @@ interface FileInputProps {
   files: File[];
   setFiles: (files: File[]) => void;
   label?: string;
+  error?: string;
 }
 
 export default function FileInput(props: FileInputProps) {
@@ -33,7 +34,12 @@ export default function FileInput(props: FileInputProps) {
           </ul>
         </div>
       )}
-      
+      {props.error && (
+        <div className={styles.errorPopup}>
+          <h6>{props.error}</h6>
+        </div>
+      )}
+
     </div>
   );
 }
