@@ -1,0 +1,35 @@
+@use '@assets/styles/colorVariables.scss' as *;
+
+.btn {
+    width: 100%;
+    min-width: fit-content;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 16px 0;
+    border-radius: 24px;
+    cursor: pointer;
+    background-color: var(--Blue);
+
+    span {
+        color: var(--White);
+    }
+
+    &:hover {
+        background-color: var(--Blue-80);
+    }
+
+    &:disabled {
+        background-color: var(--Blue);
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        span {
+            color: var(--Gray);
+        }
+    }
+
+
+}
