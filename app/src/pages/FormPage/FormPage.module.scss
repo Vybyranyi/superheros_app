@@ -1,0 +1,21 @@
+.formPage {
+    width: 500px;
+    margin: 20px auto;
+
+    .inputsContainer{
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .serverError {
+        color: var(--Red);
+        margin-top: 8px;
+    }
+
+    .buttonContainer {
+        margin-top: 20px;
+    }
+
+}

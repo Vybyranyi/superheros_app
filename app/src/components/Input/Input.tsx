@@ -22,6 +22,8 @@ export default function Input(props: IInputProps) {
                     placeholder={props.placeholder}
                     value={props.value}
                     onChange={props.onChange}
+                    onBlur={props.onBlur}
+
                 />
                 <div className={styles.inputIcon}>
                     {props.value && (
