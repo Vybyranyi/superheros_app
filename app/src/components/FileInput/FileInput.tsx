@@ -1,14 +1,14 @@
 import type { ChangeEvent } from "react";
 import styles from "@components/FileInput/FileInput.module.scss";
 
-interface FileInputProps {
+interface IFileInputProps {
   files: File[];
   setFiles: (files: File[]) => void;
   label?: string;
   error?: string;
 }
 
-export default function FileInput(props: FileInputProps) {
+export default function FileInput(props: IFileInputProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files) {
       props.setFiles(Array.from(e.currentTarget.files));
