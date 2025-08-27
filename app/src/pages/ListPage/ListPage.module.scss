@@ -1,7 +1,51 @@
 @use '@assets/styles/colorVariables.scss' as *;
 
-.cardContainer {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
+.listPage {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--Background) 0%, #ffffff 100%);
+    padding: 40px 20px;
+
+    h1 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .cardContainer {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        justify-items: center;
+        margin-bottom: 48px;
+
+        p {
+            text-align: center;
+            color: var(--Gray);
+            padding: 40px 20px;
+            background: var(--White);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        margin-top: 32px;
+        padding: 20px;
+        background: var(--White);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        max-width: 400px;
+        margin: 32px auto 0;
+
+        .pageInfo {
+            color: var(--Black);
+            min-width: 120px;
+            text-align: center;
+        }
+    }
 }
