@@ -1,0 +1,64 @@
+@use '@assets/styles/colorVariables.scss' as *;
+
+.header {
+    background: var(--White);
+    padding: 16px 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--Background);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .headerContent {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+
+        h1 {
+            color: var(--Blue);
+        }
+
+        .headerButtons {
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+
+            .headerButton {
+                min-width: 120px;
+                padding: 10px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: 2px solid var(--Blue);
+                background: var(--White);
+                color: var(--Blue);
+
+                &:hover {
+                    background: var(--Blue);
+                    color: var(--White);
+
+                    span {
+                        color: var(--White);
+                    }
+                }
+
+                &.primary {
+                    background: var(--Blue);
+                    color: var(--White);
+
+                    span {
+                        color: var(--White);
+                    }
+
+                    &:hover {
+                        background: var(--Purple);
+                        border-color: var(--Purple);
+                    }
+                }
+            }
+        }
+    }
+}

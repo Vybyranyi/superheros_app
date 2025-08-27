@@ -1,0 +1,29 @@
+@use '@assets/styles/colorVariables.scss' as *;
+
+.footer {
+    background: var(--White);
+    border-top: 1px solid var(--Background);
+    padding: 24px 20px;
+    margin-top: auto;
+
+    .footerContent {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        h4 {
+            color: var(--Blue);
+        }
+
+        h5 {
+            color: var(--Black);
+        }
+
+        h6 {
+            color: var(--Gray);
+            }
+    }
+}
