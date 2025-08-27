@@ -44,7 +44,7 @@ export interface SuperheroSlice {
 
 const initialState: SuperheroSlice = {
   currentSuperhero: null,
-  superheroesList: null,
+  superheroesList: [],
   loading: false,
   error: null,
   totalPages: null,
