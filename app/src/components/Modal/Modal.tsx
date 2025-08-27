@@ -4,7 +4,7 @@ import edit from '@assets/images/edit.svg';
 import remove_cross from '@assets/images/remove_cross.svg';
 import trash_can from '@assets/images/trash_can.svg';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getByIdSuperhero } from '@store/SuperheroSlice';
+import { getByIdSuperhero, deleteSuperhero } from '@store/SuperheroSlice';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -32,6 +32,11 @@ export default function Modal(props: IModalProps) {
         }
     };
 
+    const handleDelete = (id: string) => {
+        dispatch(deleteSuperhero(id))
+        props.onClose();
+    }
+        ;
     if (!props.isOpen) return null;
 
     return (
@@ -39,18 +44,21 @@ export default function Modal(props: IModalProps) {
             <div className={styles.modalContent}>
                 <div className={styles.modalHeader}>
                     <h2>{loading ? 'Loading...' : 'Superhero Details'}</h2>
-                    <div className={styles.btnsContainer}>
-                        <button
-                            onClick={props.onClose} >
-                            <img src={edit} alt="Close" />
-                        </button>
-                        <button onClick={props.onClose} >
-                            <img src={trash_can} alt="Close" />
-                        </button>
-                        <button onClick={props.onClose} >
-                            <img src={remove_cross} alt="Close" />
-                        </button>
-                    </div>
+                    {currentSuperhero ? (
+                        <div className={styles.btnsContainer}>
+                            <button
+                                onClick={props.onClose} >
+                                <img src={edit} alt="Close" />
+                            </button>
+                            <button onClick={() => handleDelete(currentSuperhero._id)} >
+                                <img src={trash_can} alt="Close" />
+                            </button>
+                            <button onClick={props.onClose} >
+                                <img src={remove_cross} alt="Close" />
+                            </button>
+                        </div>
+                    ) : null}
+
                 </div>
 
                 <div className={styles.modalBody}>
