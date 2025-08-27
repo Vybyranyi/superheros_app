@@ -4,14 +4,23 @@ import * as Yup from "yup";
 import Input from '@components/Input/Input';
 import Button from '@components/Button/Button';
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { createSuperhero } from "@store/SuperheroSlice";
+import { createSuperhero, setSuperheroToEdit, updateSuperhero } from "@store/SuperheroSlice";
 import FileInput from '@components/FileInput/FileInput';
+import { useNavigate } from 'react-router';
 
 export default function FormPage() {
     const dispatch = useAppDispatch();
-    const { loading, error } = useAppSelector(state => state.superheros);
+    const navigate = useNavigate();
+    const { loading, error, superheroToEdit } = useAppSelector(state => state.superheros);
 
-    const initialValues = {
+    const initialValues = superheroToEdit ? {
+        nickname: superheroToEdit.nickname,
+        real_name: superheroToEdit.real_name,
+        origin_description: superheroToEdit.origin_description,
+        superpowers: superheroToEdit.superpowers.join(', '),
+        catch_phrase: superheroToEdit.catch_phrase,
+        images: [] as File[],
+    } : {
         nickname: '',
         real_name: '',
         origin_description: '',
@@ -44,7 +53,7 @@ export default function FormPage() {
 
     return (
         <div className={styles.formPage}>
-            <h1>Create Superhero</h1>
+            <h1>{superheroToEdit ? "Edit Superhero" : "Create Superhero"}</h1>
             <div className={styles.formContent}>
                 <Formik
                     initialValues={initialValues}
@@ -59,8 +68,15 @@ export default function FormPage() {
                             images: values.images,
                         };
 
-                        await dispatch(createSuperhero(payload));
+                        if (superheroToEdit) {
+                            await dispatch(updateSuperhero({ id: superheroToEdit._id, data: payload }));
+                            dispatch(setSuperheroToEdit(null));
+                        } else {
+                            await dispatch(createSuperhero(payload));
+                        }
+
                         resetForm();
+                        navigate('/');
                     }}
                 >
                     {({ values, errors, touched, handleChange, handleBlur, isValid, dirty, setFieldValue }) => (
@@ -126,7 +142,7 @@ export default function FormPage() {
                                     type="submit"
                                     disabled={!(isValid && dirty) || loading}
                                 >
-                                    {loading ? "Loading..." : "Create"}
+                                    {loading ? "Loading..." : superheroToEdit ? "Update" : "Create"}
                                 </Button>
                             </div>
                         </Form>

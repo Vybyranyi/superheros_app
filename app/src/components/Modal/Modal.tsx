@@ -4,7 +4,8 @@ import edit from '@assets/images/edit.svg';
 import remove_cross from '@assets/images/remove_cross.svg';
 import trash_can from '@assets/images/trash_can.svg';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getByIdSuperhero, deleteSuperhero } from '@store/SuperheroSlice';
+import { getByIdSuperhero, deleteSuperhero, setSuperheroToEdit } from '@store/SuperheroSlice';
+import { useNavigate } from 'react-router';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +17,7 @@ export interface IModalProps {
 
 export default function Modal(props: IModalProps) {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { currentSuperhero, loading } = useAppSelector(state => state.superheros);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -35,8 +37,14 @@ export default function Modal(props: IModalProps) {
     const handleDelete = (id: string) => {
         dispatch(deleteSuperhero(id))
         props.onClose();
+    };
+
+    const handleEdit = () => {
+        dispatch(setSuperheroToEdit(currentSuperhero));
+        props.onClose();
+        navigate('/form');
     }
-        ;
+
     if (!props.isOpen) return null;
 
     return (
@@ -47,11 +55,11 @@ export default function Modal(props: IModalProps) {
                     {currentSuperhero ? (
                         <div className={styles.btnsContainer}>
                             <button
-                                onClick={props.onClose} >
-                                <img src={edit} alt="Close" />
+                                onClick={() => handleEdit()} >
+                                <img src={edit} alt="edit" />
                             </button>
                             <button onClick={() => handleDelete(currentSuperhero._id)} >
-                                <img src={trash_can} alt="Close" />
+                                <img src={trash_can} alt="delete" />
                             </button>
                             <button onClick={props.onClose} >
                                 <img src={remove_cross} alt="Close" />

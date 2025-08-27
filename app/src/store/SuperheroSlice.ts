@@ -39,6 +39,7 @@ export interface SuperheroSlice {
   currentPage: number | null;
   nextPageUrl: string | null;
   prevPageUrl: string | null;
+  superheroToEdit: ISuperhero | null;
 }
 
 const initialState: SuperheroSlice = {
@@ -50,6 +51,7 @@ const initialState: SuperheroSlice = {
   currentPage: null,
   nextPageUrl: null,
   prevPageUrl: null,
+  superheroToEdit: null
 };
 
 export const createSuperhero = createAsyncThunk(
@@ -169,7 +171,11 @@ export const deleteSuperhero = createAsyncThunk(
 const SuperheroSlice = createSlice({
   name: "superheros",
   initialState,
-  reducers: {},
+  reducers: {
+    setSuperheroToEdit: (state, action) => {
+      state.superheroToEdit = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createSuperhero.fulfilled, (state, action) => {
@@ -273,5 +279,5 @@ const SuperheroSlice = createSlice({
       });
   },
 });
-
+export const { setSuperheroToEdit } = SuperheroSlice.actions;
 export default SuperheroSlice.reducer;
