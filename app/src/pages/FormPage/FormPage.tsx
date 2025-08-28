@@ -5,13 +5,17 @@ import Input from '@components/Input/Input';
 import Button from '@components/Button/Button';
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { createSuperhero, setSuperheroToEdit, updateSuperhero } from "@store/SuperheroSlice";
-import FileInput from '@components/FileInput/FileInput';
+import ImageManager from '@components/ImageManager/ImageManager';
 import { useNavigate } from 'react-router';
+import { useState } from 'react';
 
 export default function FormPage() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { loading, error, superheroToEdit } = useAppSelector(state => state.superheros);
+
+    const [newFiles, setNewFiles] = useState<File[]>([]);
+    const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
 
     const initialValues = superheroToEdit ? {
         nickname: superheroToEdit.nickname,
@@ -19,14 +23,12 @@ export default function FormPage() {
         origin_description: superheroToEdit.origin_description,
         superpowers: superheroToEdit.superpowers.join(', '),
         catch_phrase: superheroToEdit.catch_phrase,
-        images: [] as File[],
     } : {
         nickname: '',
         real_name: '',
         origin_description: '',
         superpowers: '',
         catch_phrase: '',
-        images: [] as File[],
     };
 
     const validationSchema = Yup.object({
@@ -45,11 +47,23 @@ export default function FormPage() {
         catch_phrase: Yup.string()
             .min(5, 'Catch phrase must be at least 5 characters')
             .required('Required'),
-        images: Yup.array()
-            .of(Yup.mixed().required('Required'))
-            .min(1, 'At least one image is required')
-            .max(5, 'No more than 5 images are allowed'),
     });
+
+    const hasImages = () => {
+        if (superheroToEdit) {
+            const remainingExisting = superheroToEdit.images.filter(img => !imagesToRemove.includes(img));
+            return remainingExisting.length > 0 || newFiles.length > 0;
+        }
+        return newFiles.length > 0;
+    };
+
+    const isFormValid = (isValid: boolean, dirty: boolean) => {
+        if (superheroToEdit) {
+            return isValid && hasImages();
+        } else {
+            return isValid && dirty && hasImages();
+        }
+    };
 
     return (
         <div className={styles.formPage}>
@@ -65,7 +79,8 @@ export default function FormPage() {
                             origin_description: values.origin_description,
                             superpowers: values.superpowers.split(',').map(s => s.trim()),
                             catch_phrase: values.catch_phrase,
-                            images: values.images,
+                            images: newFiles,
+                            imagesToRemove: imagesToRemove.length > 0 ? imagesToRemove : undefined,
                         };
 
                         if (superheroToEdit) {
@@ -76,10 +91,12 @@ export default function FormPage() {
                         }
 
                         resetForm();
+                        setNewFiles([]);
+                        setImagesToRemove([]);
                         navigate('/');
                     }}
                 >
-                    {({ values, errors, touched, handleChange, handleBlur, isValid, dirty, setFieldValue }) => (
+                    {({ values, errors, touched, handleChange, handleBlur, isValid, dirty }) => (
                         <Form>
                             <div className={styles.inputsContainer}>
                                 <Input
@@ -122,15 +139,16 @@ export default function FormPage() {
                                     onBlur={handleBlur("catch_phrase")}
                                     error={touched.catch_phrase ? errors.catch_phrase : ""}
                                 />
-                                <FileInput
-                                    files={values.images}
-                                    setFiles={(newFiles) => {
-                                        setFieldValue("images", newFiles);
-                                    }}
+                                
+                                <ImageManager
+                                    existingImages={superheroToEdit?.images || []}
+                                    newFiles={newFiles}
+                                    setNewFiles={setNewFiles}
+                                    imagesToRemove={imagesToRemove}
+                                    setImagesToRemove={setImagesToRemove}
                                     label="Images"
-                                    error={touched.images ? (errors.images as string) : ""}
+                                    error={!hasImages() ? "At least one image is required" : ""}
                                 />
-
                             </div>
 
                             {error && (
@@ -140,7 +158,7 @@ export default function FormPage() {
                             <div className={styles.buttonContainer}>
                                 <Button
                                     type="submit"
-                                    disabled={!(isValid && dirty) || loading}
+                                    disabled={!isFormValid(isValid, dirty) || loading}
                                 >
                                     {loading ? "Loading..." : superheroToEdit ? "Update" : "Create"}
                                 </Button>
