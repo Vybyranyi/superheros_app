@@ -42,7 +42,7 @@ export interface SuperheroSlice {
   superheroToEdit: ISuperhero | null;
 }
 
-const initialState: SuperheroSlice = {
+export const initialState: SuperheroSlice = {
   currentSuperhero: null,
   superheroesList: [],
   loading: false,

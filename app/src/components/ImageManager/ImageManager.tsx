@@ -91,6 +91,7 @@ export default function ImageManager(props: IImageManagerProps) {
         accept="image/*"
         onChange={handleFileChange}
         className={styles.fileInput}
+        data-testid="file-input"
       />
 
       {props.error && (
